@@ -47,4 +47,12 @@ public class StreamBasic {
                 .map(Dish::getName)
                 .collect(toList());
     }
+
+    public static List<String> getNonVagetableList(List<Dish> dishes){
+        return dishes.stream()
+                .filter(d -> !d.isVegetarian())
+                .limit(2)
+                .map(dish -> dish.getName())
+                .collect(toList());
+    }
 }
