@@ -33,7 +33,11 @@ public class Finding{
     }
     
     private static Optional<Dish> findVegetarianDish(){
-        return menu.stream().filter(Dish::isVegetarian).findAny();
+        Optional<Dish> res = menu.stream()
+                .filter(Dish:: isVegetarian)
+                .findAny();
+        res.ifPresent(item -> System.out.println(item));
+        return res;
     }
     
 }

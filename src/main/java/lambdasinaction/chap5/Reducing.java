@@ -27,5 +27,10 @@ public class Reducing{
                            .map(Dish::getCalories)
                            .reduce(0, Integer::sum);
         System.out.println("Number of calories:" + calories);
+
+        int count = numbers.stream()
+                .map(item -> 1)
+                .reduce(0, (a,b) -> (a + b));
+        System.out.println("count:" + count);
     }
 }
