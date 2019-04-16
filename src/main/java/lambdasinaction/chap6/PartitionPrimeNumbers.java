@@ -10,14 +10,25 @@ import static java.util.stream.Collector.Characteristics.*;
 public class PartitionPrimeNumbers {
 
     public static void main(String ... args) {
-        System.out.println("Numbers partitioned in prime and non-prime: " + partitionPrimes(100));
-        System.out.println("Numbers partitioned in prime and non-prime: " + partitionPrimesWithCustomCollector(100));
+        System.out.println("Numbers partitioned in prime and non-prime: " + partitionPrimes(30));
+        System.out.println("Numbers partitioned in prime and non-prime: " + partitionPrimesWithCustomCollector(30));
 
     }
 
     public static Map<Boolean, List<Integer>> partitionPrimes(int n) {
         return IntStream.rangeClosed(2, n).boxed()
                 .collect(partitioningBy(candidate -> isPrime(candidate)));
+    }
+    public static boolean isPrimeV2(int candidate) {
+        return IntStream.range(2, candidate)
+                .limit((long) Math.sqrt(candidate))
+                .noneMatch(i -> candidate % i == 0);
+    }
+
+    public static Map<Boolean, List<Integer>> primePartion(int n) {
+        return IntStream.rangeClosed(2, n)
+                .boxed()
+                .collect(partitioningBy(i-> isPrimeV2(i)));
     }
 
     public static boolean isPrime(int candidate) {
@@ -32,10 +43,9 @@ public class PartitionPrimeNumbers {
 
     public static boolean isPrime(List<Integer> primes, Integer candidate) {
         double candidateRoot = Math.sqrt((double) candidate);
-        // return primes.stream().takeWhile(i -> i <= candidateRoot).noneMatch(i -> candidate % i == 0); // jdk 9 can support
-        return true;// todo
+        return takeWhile(primes, i -> i <= candidateRoot).stream().noneMatch(p -> candidate % p == 0);
     }
-/*
+
     public static <A> List<A> takeWhile(List<A> list, Predicate<A> p) {
         int i = 0;
         for (A item : list) {
@@ -46,7 +56,7 @@ public class PartitionPrimeNumbers {
         }
         return list;
     }
-*/
+
     public static class PrimeNumbersCollector
             implements Collector<Integer, Map<Boolean, List<Integer>>, Map<Boolean, List<Integer>>> {
 
@@ -61,9 +71,7 @@ public class PartitionPrimeNumbers {
         @Override
         public BiConsumer<Map<Boolean, List<Integer>>, Integer> accumulator() {
             return (Map<Boolean, List<Integer>> acc, Integer candidate) -> {
-                acc.get( isPrime( acc.get(true),
-                        candidate) )
-                        .add(candidate);
+               acc.get(isPrime(acc.get(true), candidate)).add(candidate);
             };
         }
 

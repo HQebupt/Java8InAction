@@ -23,22 +23,24 @@ public class ChainOfResponsibilityMain {
         System.out.println(result2);
     }
 
-    static private abstract class ProcessingObject<T> {
-        protected ProcessingObject<T> successor;
+    static abstract class ProcessingObject<T> {
+        ProcessingObject<T> successor;
 
         public void setSuccessor(ProcessingObject<T> successor) {
             this.successor = successor;
         }
 
+        abstract T handleWork(T input);
+
         public T handle(T input) {
-            T r = handleWork(input);
+            T res = handleWork(input);
             if (successor != null) {
-                return successor.handle(r);
+                return successor.handle(res);
+            } else {
+                return res;
             }
-            return r;
         }
 
-        abstract protected T handleWork(T input);
     }
 
     static private class HeaderTextProcessing
